@@ -1,14 +1,13 @@
 
-
-# WSL2 Global Folder Shortcut Setup
-A guide to jumping from deep Linux directories straight to your Windows folders (`Downloads`, `Desktop`, `Documents`) with a single command.
+# WSL2 Global Folder Shortcut & Prompt Optimizer
+A guide to jumping from deep Linux directories straight to your Windows folders (`Downloads`, `Desktop`, `Documents`) with a single command, while maintaining a clean, native-feeling Linux prompt.
 
 ---
 
-## Before You Begin: Find Your Windows Username
+##  Before You Begin: Find Your Windows Username
 Every Windows computer has a unique user folder. We need to find yours first.
 
-1. Open your **Kali/Ubuntu Linux terminal**.
+1. Open your terminal.
 2. Type this command and press **Enter**:
 ```bash
    ls /mnt/c/Users
@@ -22,18 +21,23 @@ Every Windows computer has a unique user folder. We need to find yours first.
 
 ## Step-by-Step Installation
 
-### Step 1: Open the Configuration File
+### Step 1: Open Your Configuration File
 
 Linux keeps terminal settings in a hidden file. We will open it using a terminal text editor called `nano`.
 
-Type this command and press **Enter**:
+* **If you are using Bash shell (Default Kali/Ubuntu in most setups), type:**
 
 ```bash
-nano ~/.zshrc
+  nano ~/.bashrc
 
 ```
 
-> *Note: If you are using an older version of Linux that defaults to Bash instead of Zsh, use `nano ~/.bashrc` instead.*
+* **If you are using Zsh shell, type:**
+
+```bash
+  nano ~/.zshrc
+
+```
 
 ---
 
@@ -44,20 +48,25 @@ nano ~/.zshrc
 
 ---
 
-### Step 3: Paste the Shortcut Code
+### Step 3: Paste the Shortcut & Prompt Optimization Code
 
-Copy the line below and paste it into that blank space at the bottom:
+Copy the lines below and paste them into that blank space at the bottom of the file:
 
 ```bash
+# 1. Global Navigation Shortcut
 export CDPATH=".:/mnt/c/Users/YOUR_WINDOWS_USERNAME"
+
+# 2. Native Linux Feels Prompt (Hides /mnt/c/... and keeps Kali colors)
+PS1='${debian_chroot:+($debian_chroot)}┌──(${debian_chroot:+($debian_chroot)}\[\e[1;31m\]\u\[\e[0m\]㉿\[\e[1;34m\]\h\[\e[0m\])-\[\e[0m\][\[\e[1;32m\]${PWD/#\/mnt\/c\/Users\/YOUR_WINDOWS_USERNAME/\~}\[\e[0m\]]\n└─$ '
 
 ```
 
- **CRITICAL CHANGE:**
-Delete the text `YOUR_WINDOWS_USERNAME` and type the exact name you discovered during the **Before You Begin** phase.
+**CRITICAL CHANGE:**
+Delete **BOTH** instances of `YOUR_WINDOWS_USERNAME` in the code above and replace them with the exact Windows name you discovered during the **Before You Begin** phase.
 
-* **Correct Example:** `export CDPATH=".:/mnt/c/Users/escar"`
-* **Incorrect Example:** `export CDPATH=".:/mnt/c/Users/YOUR_WINDOWS_USERNAME"`
+* **Correct Example (If your username is escar):**
+`export CDPATH=".:/mnt/c/Users/escar"`
+`... ${PWD/#\/mnt\/c\/Users\/escar/\~} ...`
 
 ---
 
@@ -75,16 +84,12 @@ Press these keyboard shortcuts sequentially to save your file:
 
 To force Linux to read your new configuration right away without closing the window, type:
 
-```bash
-source ~/.zshrc
-
-```
-
-> *Note: If you edited `.bashrc` in Step 1, run `source ~/.bashrc` instead.*
+* **For Bash users:** `source ~/.bashrc`
+* **For Zsh users:** `source ~/.zshrc`
 
 ---
 
-## Speed Test: How to Use It
+##  Speed Test: How to Use It
 
 You no longer need to type long paths like `cd /mnt/c/Users/...` anymore.
 
@@ -102,5 +107,23 @@ cd Downloads
 
 ```
 
-**Result:** Your terminal context instantly teleports straight to your Windows Downloads directory. You can now use `cd Desktop` or `cd Documents` globally from any folder in your system.
+**Result:** Your terminal context instantly teleports straight to your Windows Downloads directory.
+
+
+* Instead of the long `/mnt/c/Users/username/Downloads` path, your prompt will display a clean, native-looking `[~/Downloads]`.
+
+---
+
+## Bonus: Hide the Annoying Kali Developer Banner
+
+If your Kali Linux terminal spams you with a large minimum installation message every time you open it, you can silence it permanently.
+
+Run this single command in your terminal:
+
+```bash
+touch ~/.hushlogin
+
+```
+
+*Close your terminal and open it again. The banner is now gone forever!*
 
